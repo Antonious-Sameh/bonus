@@ -48,14 +48,13 @@ export default function AdminDashboard() {
 
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
+  const [newCustomerCode, setNewCustomerCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
-
 
   const [serverStats, setServerStats] = useState({
     todaySales: 0,
     totalCustomers: 0,
   });
-
 
   const [editUser, setEditUser] = useState(null); // عشان نخزن بيانات اليوزر اللي بنعدله
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -74,7 +73,6 @@ export default function AdminDashboard() {
       toast.error("فشل في تحديث البيانات");
     }
   };
-  
 
   useEffect(() => {
     fetchStatsAndCustomers();
@@ -113,18 +111,26 @@ export default function AdminDashboard() {
   };
 
   const handleRegister = async () => {
-    if (!newName || !newPhone || !newPassword) {
-      toast.error("لازم تملا كل الحقول");
+    // زودنا newCustomerCode في الشرط
+    if (!newName || !newPhone || !newPassword || !newCustomerCode) {
+      toast.error("لازم تملا كل الحقول بما فيها كود الزبون");
       return;
     }
 
-    const result = await registerCustomer(newName, newPhone, newPassword);
+    // بنبعت الأربع حاجات للدالة
+    const result = await registerCustomer(
+      newName,
+      newPhone,
+      newPassword,
+      newCustomerCode,
+    );
 
     if (result.success) {
       toast.success(`تم تسجيل ${newName} بنجاح!`);
       setNewName("");
       setNewPhone("");
       setNewPassword("");
+      setNewCustomerCode(""); // تصغير الخانة
       setRegisterOpen(false);
       fetchStatsAndCustomers();
     } else {
@@ -369,6 +375,16 @@ export default function AdminDashboard() {
                       className="h-12 bg-background/50 border-white/10"
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="newCustomerCode">كود الزبون المميز</Label>
+                    <Input
+                      id="newCustomerCode"
+                      value={newCustomerCode}
+                      onChange={(e) => setNewCustomerCode(e.target.value)}
+                      placeholder="مثلاً: 101"
+                      className="h-12 bg-background/50 border-white/10"
+                    />
+                  </div>
                   <Button
                     onClick={handleRegister}
                     className="w-full h-12 text-lg font-bold bg-primary"
@@ -414,7 +430,11 @@ export default function AdminDashboard() {
                   >
                     {/* 1. بيانات الزبون (يمين) */}
                     <div className="flex-1">
-                      <p className="text-lg font-bold text-foreground">
+                      <p className="text-lg font-bold text-foreground flex items-center gap-2">
+                        {/* عرض الكود هنا */}
+                        <span className="text-primary text-sm font-mono bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
+                          #{customer.customerCode || "---"}
+                        </span>
                         {customer.name}
                       </p>
                       <p className="text-sm text-muted-foreground">

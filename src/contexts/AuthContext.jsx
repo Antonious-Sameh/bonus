@@ -64,9 +64,17 @@ export function AuthProvider({ children }) {
   };
 
   // 4. تسجيل زبون جديد في الداتابيز
-  const registerCustomer = async (name, phone, password) => {
+  // 4. تسجيل زبون جديد في الداتابيز
+  const registerCustomer = async (name, phone, password, customerCode) => {
     try {
-      await axios.post(`${API_URL}/auth/register`, { name, phone, password, role: 'customer' });
+      // ضفنا الـ customerCode هنا عشان يتبعت للسيرفر
+      await axios.post(`${API_URL}/auth/register`, { 
+        name, 
+        phone, 
+        password, 
+        customerCode, 
+        role: 'customer' 
+      });
       return { success: true };
     } catch (error) {
       return { 
