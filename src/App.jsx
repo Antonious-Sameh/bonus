@@ -9,7 +9,8 @@ import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import CustomerProfile from './pages/CustomerProfile';
 import LeaderboardPage from './pages/LeaderboardPage';
-import SalesReport from './pages/SalesReport'; // 💡 استدعاء صفحة التقارير الجديدة
+import SalesReport from './pages/SalesReport'; 
+import WhatsAppWidget from "./components/WhatsAppWidget";
 
 function App() {
   return (
@@ -20,9 +21,11 @@ function App() {
           
           <div className="flex-1">
             <Routes>
+              {/* توجيه الصفحة الرئيسية لصفحة تسجيل الدخول */}
               <Route path="/" element={<Navigate to="/login" replace />} />
               <Route path="/login" element={<LoginPage />} />
               
+              {/* مسارات الأدمن المحمية */}
               <Route
                 path="/admin"
                 element={
@@ -41,7 +44,7 @@ function App() {
                 }
               />
 
-              {/* 💡 التعديل هنا: إضافة مسار صفحة تقارير المبيعات وحمايتها */}
+              {/* صفحة تقارير المبيعات */}
               <Route
                 path="/admin/reports"
                 element={
@@ -51,15 +54,7 @@ function App() {
                 }
               />
 
-              <Route
-                path="/admin/leaderboard"
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <LeaderboardPage />
-                  </ProtectedRoute>
-                }
-              />
-
+              {/* مسار العميل - متاح للعميل والأدمن */}
               <Route
                 path="/customer/:phone"
                 element={
@@ -69,12 +64,16 @@ function App() {
                 }
               />
               
+              {/* أي مسار غير معروف يرجع للـ Login */}
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
           </div>
 
           <Footer />
         </div>
+
+        {/* ✅ استدعاء علامة الواتساب هنا بيخليها ثابتة فوق كل الصفحات */}
+        <WhatsAppWidget />
 
         <Toaster position="top-center" toastOptions={{ className: 'font-cairo' }} />
       </Router>
