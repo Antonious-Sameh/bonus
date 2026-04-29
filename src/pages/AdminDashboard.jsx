@@ -12,6 +12,9 @@ import {
   Search,
   Trophy,
   BarChart3,
+  Pencil,
+  Trash2,
+  Key,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +49,9 @@ export default function AdminDashboard() {
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [newPassword, setNewPassword] = useState("");
+
+  const [editUser, setEditUser] = useState(null); // عشان نخزن بيانات اليوزر اللي بنعدله
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   // دالة لجلب البيانات فورياً
   const fetchStatsAndCustomers = async () => {
@@ -130,6 +136,38 @@ export default function AdminDashboard() {
   const filteredCustomers = customers.filter(
     (c) => c.name.includes(searchQuery) || c.phone.includes(searchQuery),
   );
+
+  const handleDelete = async (id) => {
+    if (window.confirm("هل أنت متأكد إنك عاوز تمسح الزبون ده وكل بياناته؟")) {
+      try {
+        await axios.delete(
+          `https://bonus-system-tau.vercel.app/api/admin/delete-customer/${id}`,
+        );
+        toast.success("تم حذف الزبون بنجاح");
+        fetchStatsAndCustomers(); // عشان نحدث القائمة
+      } catch (error) {
+        toast.error("فشل في الحذف");
+      }
+    }
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await axios.put(
+        `https://bonus-system-tau.vercel.app/api/admin/update-customer/${editUser._id}`,
+        {
+          name: editUser.name,
+          phone: editUser.phone,
+          points: editUser.points,
+        },
+      );
+      toast.success("تم التحديث بنجاح");
+      setIsEditOpen(false);
+      fetchStatsAndCustomers();
+    } catch (error) {
+      toast.error("فشل التعديل");
+    }
+  };
 
   return (
     <>
@@ -364,13 +402,14 @@ export default function AdminDashboard() {
               {filteredCustomers.length > 0 ? (
                 filteredCustomers.map((customer, index) => (
                   <motion.div
-                    key={customer.phone}
+                    key={customer._id || customer.phone} // يفضل تستخدم _id لو متاح
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
                     className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5 hover:border-primary/30 hover:bg-white/10 transition-all duration-300"
                   >
-                    <div>
+                    {/* 1. بيانات الزبون (يمين) */}
+                    <div className="flex-1">
                       <p className="text-lg font-bold text-foreground">
                         {customer.name}
                       </p>
@@ -378,11 +417,39 @@ export default function AdminDashboard() {
                         {customer.phone}
                       </p>
                     </div>
-                    <div className="text-left">
+
+                    {/* 2. أزرار الإدارة (في النص) */}
+                    <div className="flex items-center gap-2 mx-4">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditUser(customer);
+                          setIsEditOpen(true);
+                        }}
+                        className="text-blue-400 hover:text-blue-500 hover:bg-blue-500/10"
+                      >
+                        <Pencil className="w-5 h-5" />
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDelete(customer._id)}
+                        className="text-red-400 hover:text-red-500 hover:bg-red-500/10"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </Button>
+                    </div>
+
+                    {/* 3. النقاط (شمال) */}
+                    <div className="text-left min-w-[60px]">
                       <p className="text-2xl font-bold text-primary drop-shadow-[0_0_5px_rgba(57,255,20,0.3)]">
                         {customer.points || 0}
                       </p>
-                      <p className="text-xs text-muted-foreground">نقطة</p>
+                      <p className="text-xs text-muted-foreground text-center">
+                        نقطة
+                      </p>
                     </div>
                   </motion.div>
                 ))
