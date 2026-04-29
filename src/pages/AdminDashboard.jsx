@@ -169,6 +169,7 @@ export default function AdminDashboard() {
           name: editUser.name,
           phone: editUser.phone,
           points: editUser.points,
+          customerCode: editUser.customerCode, // السطر ده هو اللي بيبعت الكود الجديد للسيرفر
         },
       );
       toast.success("تم التحديث بنجاح");
@@ -499,6 +500,16 @@ export default function AdminDashboard() {
 
             {editUser && (
               <div className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label>كود الزبون</Label>
+                  <Input
+                    value={editUser.customerCode || ""} // عشان يقرأ الكود القديم
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, customerCode: e.target.value })
+                    }
+                    className="h-12 bg-background/50 border-white/10 text-white"
+                  />
+                </div>
                 <div className="space-y-2">
                   <Label>اسم الزبون</Label>
                   <Input
