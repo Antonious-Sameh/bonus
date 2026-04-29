@@ -50,6 +50,13 @@ export default function AdminDashboard() {
   const [newPhone, setNewPhone] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
+
+  const [serverStats, setServerStats] = useState({
+    todaySales: 0,
+    totalCustomers: 0,
+  });
+
+
   const [editUser, setEditUser] = useState(null); // عشان نخزن بيانات اليوزر اللي بنعدله
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -67,10 +74,7 @@ export default function AdminDashboard() {
       toast.error("فشل في تحديث البيانات");
     }
   };
-  const [serverStats, setServerStats] = useState({
-    todaySales: 0,
-    totalCustomers: 0,
-  });
+  
 
   useEffect(() => {
     fetchStatsAndCustomers();
@@ -464,6 +468,62 @@ export default function AdminDashboard() {
             </div>
           </motion.div>
         </div>
+        {/* نافذة تعديل بيانات الزبون */}
+        <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+          <DialogContent className="glass-card border-white/10 sm:max-w-md bg-[#0a0a0a] text-white">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-foreground">
+                تعديل بيانات الزبون
+              </DialogTitle>
+            </DialogHeader>
+
+            {editUser && (
+              <div className="space-y-4 mt-4">
+                <div className="space-y-2">
+                  <Label>اسم الزبون</Label>
+                  <Input
+                    value={editUser.name}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, name: e.target.value })
+                    }
+                    className="h-12 bg-background/50 border-white/10 text-white"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>رقم الموبايل</Label>
+                  <Input
+                    value={editUser.phone}
+                    onChange={(e) =>
+                      setEditUser({ ...editUser, phone: e.target.value })
+                    }
+                    className="h-12 bg-background/50 border-white/10 text-white"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>النقاط الحالية</Label>
+                  <Input
+                    type="number"
+                    value={editUser.points}
+                    onChange={(e) =>
+                      setEditUser({
+                        ...editUser,
+                        points: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="h-12 bg-background/50 border-white/10 text-white"
+                  />
+                </div>
+
+                <Button
+                  onClick={handleUpdate}
+                  className="w-full h-12 text-lg font-bold bg-primary text-primary-foreground mt-4 hover:shadow-[0_0_15px_rgba(57,255,20,0.4)]"
+                >
+                  حفظ التعديلات
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
