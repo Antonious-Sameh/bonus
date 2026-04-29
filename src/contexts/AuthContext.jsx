@@ -23,7 +23,12 @@ export function AuthProvider({ children }) {
   const login = async (phone, password) => {
     try {
       const response = await axios.post(`${API_URL}/auth/login`, { phone, password });
-      const userData = response.data.user;
+      
+      // التعديل هنا: بنضمن إننا بنخزن الـ customerCode لو موجود
+      const userData = {
+        ...response.data.user,
+        customerCode: response.data.user.customerCode || "" 
+      };
       
       setUser(userData);
       localStorage.setItem('loyaltyUser', JSON.stringify(userData));
