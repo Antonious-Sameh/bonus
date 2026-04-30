@@ -2,8 +2,8 @@
 
 const WhatsAppWidget = () => {
   const phoneNumber = "201009012719";
-  const message = "السلام عليكم، محتاج استفسر عن خدمة معينة"; // اختياري لو عاوز رسالة جاهزة
-  
+  const message = "لو سمحت محتاج اسجل في برنامج النقاط "; // اختياري لو عاوز رسالة جاهزة
+
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
   return (
@@ -14,8 +14,8 @@ const WhatsAppWidget = () => {
       className="fixed bottom-6 right-6 z-[1000] flex h-14 w-14 items-center justify-center rounded-full bg-[#25d366] shadow-lg transition-transform hover:scale-110 active:scale-95"
       aria-label="Contact us on WhatsApp"
     >
-      <svg 
-        viewBox="0 0 24 24" 
+      <svg
+        viewBox="0 0 24 24"
         className="h-8 w-8 fill-white"
         xmlns="http://www.w3.org/2000/svg"
       >
