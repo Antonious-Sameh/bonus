@@ -94,7 +94,7 @@ export default function LeaderboardPage() {
   return (
     <>
       <Helmet>
-        <title>لوحة المتصدرين - نظام الولاء</title>
+        <title>لوحة المتصدرين - نظام نسر البرية </title>
       </Helmet>
 
       <div className="min-h-screen bg-background relative overflow-hidden flex flex-col font-cairo">

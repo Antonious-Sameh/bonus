@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import { Wallet, Sparkles, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// ضفنا onRedeem هنا عشان نستقبل الدالة من الصفحة الأم
 export default function RewardCard({ userPoints, delay = 0, onRedeem }) {
-  const cashValue = Math.floor(userPoints / 10); // كل 10 نقط بجنيه
+  // المنطق الجديد: النقطة بـ جنيه عند الشراء من المحل
+  const cashValue = userPoints; 
 
   return (
     <motion.div
@@ -14,6 +14,7 @@ export default function RewardCard({ userPoints, delay = 0, onRedeem }) {
       transition={{ duration: 0.5, delay }}
       className="glass-card p-6 sm:p-8 relative overflow-hidden group"
     >
+      {/* تأثير خلفية جمالي */}
       <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -ml-20 -mt-20 transition-all duration-500 group-hover:bg-primary/20 pointer-events-none" />
       
       <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
@@ -37,13 +38,13 @@ export default function RewardCard({ userPoints, delay = 0, onRedeem }) {
                 <Wallet className="w-6 h-6 text-primary" />
               </div>
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">قيمة النقط كاش</p>
+                <p className="text-sm text-muted-foreground">قيمة الخصم المستحق</p>
                 <p className="text-2xl font-bold text-primary">{cashValue} جنيه</p>
               </div>
             </div>
             <div className="hidden sm:block w-px h-12 bg-white/10 mx-2"></div>
             <p className="text-sm text-muted-foreground text-center sm:text-right">
-              كل 100 نقطة = 10 جنيه خصم على أي منتج
+              مبروك! كل نقطة معاك بتساوي 1 جنيه خصم فوري على مشترياتك
             </p>
           </div>
         </div>
@@ -55,9 +56,9 @@ export default function RewardCard({ userPoints, delay = 0, onRedeem }) {
           </p>
           
           <Button 
-            onClick={onRedeem} // هنا ربطنا الدالة بالزرار
-            disabled={userPoints <= 0} // الزرار مبيشتغلش لو مفيش نقط
-            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(57,255,20,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={onRedeem} 
+            disabled={userPoints <= 0} 
+            className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(57,255,20,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-bold"
           >
             استخدم النقط
             <ArrowLeft className="w-4 h-4 mr-2" />

@@ -47,8 +47,8 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title>تسجيل الدخول - نظام الولاء</title>
-        <meta name="description" content="سجل دخولك لنظام الولاء واكسب نقاط مع كل عملية شراء" />
+        <title>تسجيل الدخول - نظام نسر البرية</title>
+        <meta name="description" content="سجل دخولك لنظام نسر البرية واكسب نقاط مع كل عملية شراء" />
       </Helmet>
 
       <div className="min-h-screen flex flex-col bg-background relative overflow-hidden font-cairo">

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
-import { ArrowRight, LogOut, Receipt } from "lucide-react";
+import { ArrowRight, LogOut, Receipt, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import PointsBadge from "@/components/PointsBadge.jsx";
@@ -22,7 +22,6 @@ export default function CustomerProfile() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // حماية الصفحة: لو مفيش يوزر مسجل دخول أصلاً
     if (!user) {
       navigate("/login");
       return;
@@ -31,12 +30,9 @@ export default function CustomerProfile() {
     const fetchCustomerDetails = async () => {
       try {
         setLoading(true);
-        // التأكد من المسار الصحيح للـ API
         const response = await axios.get(
           `https://bonus-system-tau.vercel.app/api/admin/customer/${phone}`,
         );
-
-        console.log("البيانات وصلت كاملة:", response.data);
         setCustomerData(response.data);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -62,7 +58,6 @@ export default function CustomerProfile() {
     );
   }
 
-  // لو مفيش داتا رجعت خالص من السيرفر
   if (!customerData || !customerData.user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
@@ -71,25 +66,29 @@ export default function CustomerProfile() {
     );
   }
 
+  // دالة استبدال النقاط المعدلة
   const handleRedeemPoints = () => {
-  // الرقم كدة مكتوب صح بالكود الدولي عشان الواتساب يفهمه
-  const adminPhone = "201009012719"; 
-  
-  // الرسالة منظمة ومنسقة عشان توصل لصاحب المحل واضحة
-  const message = `يا هندسة، أنا الزبون: ${customerData.user.name}%0A` +
-                  `رقم موبايلي: ${customerData.user.phone}%0A` +
-                  `محتاج أستبدل نقاطي (معايا ${customerData.user.points} نقطة).%0A` +
-                  `قيمة نقاطي الحالية: ${Math.floor(customerData.user.points / 10)} جنيه.`;
-  
-  const whatsappUrl = `https://wa.me/${adminPhone}?text=${message}`;
-  
-  // دي هتفتح الواتساب فوراً سواء من الموبايل أو الكمبيوتر
-  window.open(whatsappUrl, "_blank");
-};
+    const adminPhone = "201009012719";
+
+    // المنطق الجديد: القيمة المالية تساوي عدد النقاط مباشرة (1 نقطة = 1 جنيه)
+    const cashValue = customerData.user.points;
+
+    const message =
+      `طلب استبدال نقاط - نسر البرية 🦅%0A%0A` +
+      `العميل: ${customerData.user.name}%0A` +
+      `رقم الهاتف: ${customerData.user.phone}%0A` +
+      `إجمالي النقاط: ${customerData.user.points} نقطة%0A` +
+      `المبلغ المستحق للخصم: ${cashValue} جنيه مصري%0A%0A` +
+      `محتاج أستخدم النقاط دي في مشترياتي القادمة، شكراً!`;
+
+    const whatsappUrl = `https://wa.me/${adminPhone}?text=${message}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
   return (
     <>
       <Helmet>
-        <title>{`${customerData.user.name || "البروفايل"} - نظام الولاء`}</title>
+        <title>{`${customerData.user.name || "البروفايل"} - نظام نسر البرية`}</title>
         <meta name="description" content="شوف نقاطك واستبدلها بهدايا مجانية" />
       </Helmet>
 
@@ -99,6 +98,7 @@ export default function CustomerProfile() {
         <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+          {/* أزرار التنقل */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -122,11 +122,12 @@ export default function CustomerProfile() {
             </Button>
           </motion.div>
 
+          {/* رسالة الترحيب */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-center mb-10"
+            className="text-center mb-6"
           >
             <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
               أهلاً يا {customerData.user.name} 👋
@@ -136,13 +137,29 @@ export default function CustomerProfile() {
             </p>
           </motion.div>
 
+          {/* تنبيه توضيحي لنظام النقاط الجديد */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.15 }}
+            className="bg-primary/10 border border-primary/20 rounded-2xl p-4 mb-10 flex items-center gap-4 text-primary"
+          >
+            <div className="bg-primary/20 p-2 rounded-full">
+              <Info className="w-6 h-6" />
+            </div>
+            <p className="text-sm md:text-base font-medium leading-relaxed">
+              نظامنا الجديد: كل 100 جنيه مشتريات بتديك 10 نقط.. وعند الاستبدال{" "}
+              <strong>كل نقطة بتساوي 1 جنيه</strong> خصم فوري!
+            </p>
+          </motion.div>
+
+          {/* قسم النقاط والترتيب */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
             >
-              {/* التعديل: بنقرأ النقاط من جوه الـ user */}
               <PointsBadge points={customerData.user.points || 0} />
             </motion.div>
 
@@ -164,6 +181,7 @@ export default function CustomerProfile() {
             </div>
           </div>
 
+          {/* كرت الاستبدال */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -177,6 +195,7 @@ export default function CustomerProfile() {
             />
           </motion.div>
 
+          {/* سجل العمليات */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

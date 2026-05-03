@@ -186,7 +186,7 @@ export default function AdminDashboard() {
         <title>لوحة التحكم - نسر البرية</title>
         <meta
           name="description"
-          content="إدارة العملاء والنقاط في نظام الولاء"
+          content="إدارة العملاء والنقاط في نظام نسر البرية"
         />
       </Helmet>
 
