@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
-import { ArrowRight, LogOut, Receipt, Info } from "lucide-react";
+import { ArrowRight, LogOut, Receipt, Info, Star } from "lucide-react"; // ضفنا Star هنا
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import PointsBadge from "@/components/PointsBadge.jsx";
@@ -66,11 +66,8 @@ export default function CustomerProfile() {
     );
   }
 
-  // دالة استبدال النقاط المعدلة
   const handleRedeemPoints = () => {
     const adminPhone = "201009012719";
-
-    // المنطق الجديد: القيمة المالية تساوي عدد النقاط مباشرة (1 نقطة = 1 جنيه)
     const cashValue = customerData.user.points;
 
     const message =
@@ -92,7 +89,7 @@ export default function CustomerProfile() {
         <meta name="description" content="شوف نقاطك واستبدلها بهدايا مجانية" />
       </Helmet>
 
-      <div className="min-h-screen bg-background relative overflow-hidden flex flex-col font-cairo">
+      <div className="min-h-screen bg-background relative overflow-hidden flex flex-col font-cairo text-right" dir="rtl">
         <Header />
 
         <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
@@ -132,9 +129,23 @@ export default function CustomerProfile() {
             <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
               أهلاً يا {customerData.user.name} 👋
             </h1>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-muted-foreground mb-6">
               نورت المحل، رقمك: {customerData.user.phone}
             </p>
+
+            {/* زرار التقييم الجديد */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                onClick={() => window.open("https://g.page/r/CSSPGLjbftidEBI/review", "_blank")}
+                className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-6 px-8 rounded-full shadow-lg shadow-yellow-500/20 flex items-center gap-2 mx-auto transition-all"
+              >
+                <Star className="w-5 h-5 fill-black" />
+                قيم تجربتك معانا على جوجل
+              </Button>
+            </motion.div>
           </motion.div>
 
           {/* تنبيه توضيحي لنظام النقاط الجديد */}
@@ -153,7 +164,7 @@ export default function CustomerProfile() {
             </p>
           </motion.div>
 
-          {/* قسم النقاط والترتيب */}
+          {/* باقي الكود كما هو... */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -181,7 +192,6 @@ export default function CustomerProfile() {
             </div>
           </div>
 
-          {/* كرت الاستبدال */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -195,7 +205,6 @@ export default function CustomerProfile() {
             />
           </motion.div>
 
-          {/* سجل العمليات */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
