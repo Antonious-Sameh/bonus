@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
-import { ArrowRight, LogOut, Receipt, Info, Star } from "lucide-react"; // ضفنا Star هنا
+import { ArrowRight, LogOut, Receipt, Info, Star, Package, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import PointsBadge from "@/components/PointsBadge.jsx";
@@ -95,28 +95,46 @@ export default function CustomerProfile() {
         <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-          {/* أزرار التنقل */}
+          {/* أزرار التنقل — responsive */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-between mb-8"
+            className="mb-8"
           >
-            <Button
-              onClick={() => navigate("/login")}
-              variant="outline"
-              className="glass-card border-white/10 hover:bg-white/10"
-            >
-              <ArrowRight className="w-5 h-5 ml-2" />
-              رجوع
-            </Button>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="glass-card border-white/10 hover:bg-white/10"
-            >
-              <LogOut className="w-5 h-5 ml-2" />
-              خروج
-            </Button>
+            {/* موبايل: صفين */}
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              <button
+                onClick={() => navigate("/login")}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all text-sm font-medium"
+              >
+                <ArrowRight className="w-4 h-4 shrink-0" />
+                <span>رجوع</span>
+              </button>
+
+              <button
+                onClick={() => navigate("/products")}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-orange-500/10 border border-orange-400/20 text-orange-400 hover:bg-orange-400/20 transition-all text-sm font-medium"
+              >
+                <Package className="w-4 h-4 shrink-0" />
+                <span>منتجاتنا</span>
+              </button>
+
+              <button
+                onClick={() => navigate("/offers")}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-500/10 border border-purple-400/20 text-purple-400 hover:bg-purple-400/20 transition-all text-sm font-medium"
+              >
+                <Tag className="w-4 h-4 shrink-0" />
+                <span>عروضنا</span>
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 border border-red-400/20 text-red-400 hover:bg-red-400/20 transition-all text-sm font-medium mr-auto"
+              >
+                <LogOut className="w-4 h-4 shrink-0" />
+                <span>خروج</span>
+              </button>
+            </div>
           </motion.div>
 
           {/* رسالة الترحيب */}

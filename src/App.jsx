@@ -10,6 +10,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import CustomerProfile from './pages/CustomerProfile';
 import LeaderboardPage from './pages/LeaderboardPage';
 import SalesReport from './pages/SalesReport'; 
+import AdminProducts from './pages/AdminProducts';
+import ProductsPage from './pages/ProductsPage';
+import AdminOffers from './pages/AdminOffers';
+import OffersPage from './pages/OffersPage';
 import WhatsAppWidget from "./components/WhatsAppWidget";
 
 function App() {
@@ -50,6 +54,46 @@ function App() {
                 element={
                   <ProtectedRoute requiredRole="admin">
                     <SalesReport />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* صفحة إدارة المنتجات - للأدمن */}
+              <Route
+                path="/admin/products"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminProducts />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* صفحة المنتجات - للعميل والأدمن */}
+              <Route
+                path="/products"
+                element={
+                  <ProtectedRoute allowedRoles={['customer', 'admin']}>
+                    <ProductsPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* صفحة إدارة العروض - للأدمن */}
+              <Route
+                path="/admin/offers"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminOffers />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* صفحة العروض - للعميل والأدمن */}
+              <Route
+                path="/offers"
+                element={
+                  <ProtectedRoute allowedRoles={['customer', 'admin']}>
+                    <OffersPage />
                   </ProtectedRoute>
                 }
               />

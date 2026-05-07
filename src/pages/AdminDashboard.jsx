@@ -15,6 +15,8 @@ import {
   Pencil,
   Trash2,
   Key,
+  Package,
+  Tag,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,6 +60,10 @@ export default function AdminDashboard() {
 
   const [editUser, setEditUser] = useState(null); // عشان نخزن بيانات اليوزر اللي بنعدله
   const [isEditOpen, setIsEditOpen] = useState(false);
+
+  // state خاص بتغيير كلمة السر
+  const [newPasswordForEdit, setNewPasswordForEdit] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   // دالة لجلب البيانات فورياً
   const fetchStatsAndCustomers = async () => {
@@ -135,6 +141,26 @@ export default function AdminDashboard() {
       fetchStatsAndCustomers();
     } else {
       toast.error(result.error);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (!newPasswordForEdit || newPasswordForEdit.length < 4) {
+      toast.error("كلمة السر لازم تكون 4 حروف على الأقل");
+      return;
+    }
+    setIsChangingPassword(true);
+    try {
+      await axios.put(
+        `https://bonus-system-tau.vercel.app/api/admin/change-password/${editUser._id}`,
+        { newPassword: newPasswordForEdit }
+      );
+      toast.success(`✅ تم تغيير كلمة سر ${editUser.name} بنجاح`);
+      setNewPasswordForEdit("");
+    } catch (error) {
+      toast.error("فشل تغيير كلمة السر");
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -218,6 +244,22 @@ export default function AdminDashboard() {
               >
                 <BarChart3 className="w-5 h-5 ml-2" />
                 تقارير المبيعات
+              </Button>
+
+              <Button
+                onClick={() => navigate("/admin/products")}
+                className="flex-1 sm:flex-none bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 border border-orange-500/20"
+              >
+                <Package className="w-5 h-5 ml-2" />
+                المنتجات
+              </Button>
+
+              <Button
+                onClick={() => navigate("/admin/offers")}
+                className="flex-1 sm:flex-none bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 border border-purple-500/20"
+              >
+                <Tag className="w-5 h-5 ml-2" />
+                العروض
               </Button>
 
               <Button
@@ -551,6 +593,30 @@ export default function AdminDashboard() {
                 >
                   حفظ التعديلات
                 </Button>
+
+                {/* ── فاصل تغيير كلمة السر ── */}
+                <div className="border-t border-white/10 pt-4 mt-2">
+                  <p className="text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                    <Key className="w-4 h-4 text-yellow-400" />
+                    تغيير كلمة السر
+                  </p>
+                  <div className="flex gap-2">
+                    <Input
+                      type="password"
+                      value={newPasswordForEdit}
+                      onChange={(e) => setNewPasswordForEdit(e.target.value)}
+                      placeholder="كلمة السر الجديدة"
+                      className="h-11 bg-background/50 border-white/10 text-white flex-1"
+                    />
+                    <Button
+                      onClick={handleChangePassword}
+                      disabled={isChangingPassword}
+                      className="h-11 px-4 bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 hover:bg-yellow-500/30 transition-all"
+                    >
+                      {isChangingPassword ? "جاري..." : "تغيير"}
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
           </DialogContent>
