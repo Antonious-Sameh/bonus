@@ -132,3 +132,57 @@ h3 {
 .animate-glow-pulse {
   animation: glow-pulse 2s ease-in-out infinite;
 }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  h1 { font-size: 1.875rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+
+  /* Dialogs تجيب من تحت على موبايل */
+  [role="dialog"] {
+    margin: 0 !important;
+    max-height: 92dvh !important;
+    overflow-y: auto !important;
+    border-radius: 1.5rem 1.5rem 0 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: fixed !important;
+    transform: none !important;
+  }
+}
+
+/* منع overflow أفقي */
+#root { overflow-x: hidden; }
+
+/* scrollbar أنيق */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted)); }
+
+/* focus */
+*:focus-visible {
+  outline: 2px solid hsl(var(--primary) / 0.6);
+  outline-offset: 2px;
+}
+
+/* safe area موبايل */
+.min-h-screen { min-height: 100dvh; }
+
+/* إلغاء highlight على موبايل */
+button, a, [role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* إلغاء hover على touch screens */
+@media (hover: none) {
+  .glass-card:hover {
+    border-color: rgba(255,255,255,0.1) !important;
+    box-shadow: none !important;
+  }
+}

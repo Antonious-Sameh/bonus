@@ -229,58 +229,60 @@ export default function AdminDashboard() {
             className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8"
           >
             <div>
-              <h1 className="text-4xl font-extrabold text-foreground mb-2">
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-1">
                 أهلاً يا {user?.name} 👋
               </h1>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-base text-muted-foreground">
                 إدارة نظام نسر البرية
               </p>
             </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              {/* زرار التقارير الجديد اللي ضفناه */}
-              <Button
+
+            {/* أزرار التنقل — grid على موبايل */}
+            <div className="grid grid-cols-3 sm:flex sm:flex-row gap-2 w-full sm:w-auto">
+              <button
                 onClick={() => navigate("/admin/reports")}
-                className="flex-1 sm:flex-none bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border border-blue-500/20"
+                className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 py-2.5 rounded-xl bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-all text-xs sm:text-sm font-medium"
               >
-                <BarChart3 className="w-5 h-5 ml-2" />
-                تقارير المبيعات
-              </Button>
+                <BarChart3 className="w-4 h-4 shrink-0" />
+                <span>التقارير</span>
+              </button>
 
-              <Button
+              <button
                 onClick={() => navigate("/admin/products")}
-                className="flex-1 sm:flex-none bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 border border-orange-500/20"
+                className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 py-2.5 rounded-xl bg-orange-500/10 text-orange-400 border border-orange-500/20 hover:bg-orange-500/20 transition-all text-xs sm:text-sm font-medium"
               >
-                <Package className="w-5 h-5 ml-2" />
-                المنتجات
-              </Button>
+                <Package className="w-4 h-4 shrink-0" />
+                <span>المنتجات</span>
+              </button>
 
-              <Button
+              <button
                 onClick={() => navigate("/admin/offers")}
-                className="flex-1 sm:flex-none bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 border border-purple-500/20"
+                className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 py-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20 hover:bg-purple-500/20 transition-all text-xs sm:text-sm font-medium"
               >
-                <Tag className="w-5 h-5 ml-2" />
-                العروض
-              </Button>
+                <Tag className="w-4 h-4 shrink-0" />
+                <span>العروض</span>
+              </button>
 
-              <Button
+              <button
                 onClick={() => navigate("/admin/leaderboard")}
-                className="flex-1 sm:flex-none bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20"
+                className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 py-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-all text-xs sm:text-sm font-medium"
               >
-                <Trophy className="w-5 h-5 ml-2" />
-                لوحة المتصدرين
-              </Button>
+                <Trophy className="w-4 h-4 shrink-0" />
+                <span>المتصدرين</span>
+              </button>
 
-              <Button
+              <button
                 onClick={handleLogout}
-                variant="outline"
-                className="glass-card border-white/10 hover:bg-white/10"
+                className="col-span-2 sm:col-span-1 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 py-2.5 rounded-xl bg-white/5 text-muted-foreground border border-white/10 hover:bg-white/10 hover:text-foreground transition-all text-xs sm:text-sm font-medium"
               >
-                <LogOut className="w-5 h-5 ml-2" />
-                خروج
-              </Button>
+                <LogOut className="w-4 h-4 shrink-0" />
+                <span>خروج</span>
+              </button>
             </div>
+            
           </motion.div>
 
+    
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <StatsCard
               icon={Users}
@@ -623,5 +625,6 @@ export default function AdminDashboard() {
         </Dialog>
       </div>
     </>
+    
   );
 }

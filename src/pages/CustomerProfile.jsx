@@ -11,6 +11,7 @@ import TransactionItem from "@/components/TransactionItem.jsx";
 import CommunityRank from "@/components/CommunityRank.jsx";
 import ExpirationWarning from "@/components/ExpirationWarning.jsx";
 import Header from "@/components/Header.jsx";
+import NotificationPrompt from "@/components/NotificationPrompt.jsx";
 import axios from "axios";
 
 export default function CustomerProfile() {
@@ -254,6 +255,9 @@ export default function CustomerProfile() {
           </motion.div>
         </div>
       </div>
+
+      {/* بانر تفعيل الإشعارات */}
+      <NotificationPrompt phone={customerData.user.phone} />
     </>
   );
 }
