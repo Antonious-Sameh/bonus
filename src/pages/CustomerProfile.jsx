@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
-import { ArrowRight, LogOut, Receipt, Info, Star, Package, Tag } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { LogOut, Receipt, Info, Star, Package, Tag, Home } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import PointsBadge from "@/components/PointsBadge.jsx";
 import RewardCard from "@/components/RewardCard.jsx";
@@ -18,246 +17,234 @@ export default function CustomerProfile() {
   const { phone } = useParams();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-
   const [customerData, setCustomerData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
+    if (!user) { navigate("/login"); return; }
     const fetchCustomerDetails = async () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `https://bonus-system-tau.vercel.app/api/admin/customer/${phone}`,
+          `https://bonus-system-tau.vercel.app/api/admin/customer/${phone}`
         );
         setCustomerData(response.data);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
+      } catch {
         setCustomerData(null);
       } finally {
         setLoading(false);
       }
     };
-
     fetchCustomerDetails();
   }, [phone, user, navigate]);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
+  const handleLogout = () => { logout(); navigate("/login"); };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-primary"></div>
+  if (loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+        <p className="text-sm text-muted-foreground">جاري التحميل...</p>
       </div>
-    );
-  }
+    </div>
+  );
 
-  if (!customerData || !customerData.user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
-        <p>مش عارفين نوصل لبياناتك حالياً يا بطل..</p>
-      </div>
-    );
-  }
+  if (!customerData?.user) return (
+    <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+      <p className="text-muted-foreground">مش عارفين نوصل لبياناتك حالياً يا بطل..</p>
+    </div>
+  );
 
   const handleRedeemPoints = () => {
-    const adminPhone = "201009012719";
-    const cashValue = customerData.user.points;
-
-    const message =
+    const msg =
       `طلب استبدال نقاط - نسر البرية 🦅%0A%0A` +
       `العميل: ${customerData.user.name}%0A` +
       `رقم الهاتف: ${customerData.user.phone}%0A` +
       `إجمالي النقاط: ${customerData.user.points} نقطة%0A` +
-      `المبلغ المستحق للخصم: ${cashValue} جنيه مصري%0A%0A` +
+      `المبلغ المستحق: ${customerData.user.points} جنيه%0A%0A` +
       `محتاج أستخدم النقاط دي في مشترياتي القادمة، شكراً!`;
-
-    const whatsappUrl = `https://wa.me/${adminPhone}?text=${message}`;
-    window.open(whatsappUrl, "_blank");
+    window.open(`https://wa.me/201009012719?text=${msg}`, "_blank");
   };
+
+  const navItems = [
+    { label: "منتجاتنا", icon: Package, path: "/products", color: "text-amber-400", bg: "bg-amber-500/10 border-amber-400/20 hover:bg-amber-400/15" },
+    { label: "عروضنا",   icon: Tag,     path: "/offers",   color: "text-violet-400", bg: "bg-violet-500/10 border-violet-400/20 hover:bg-violet-400/15" },
+  ];
 
   return (
     <>
       <Helmet>
-        <title>{`${customerData.user.name || "البروفايل"} - نظام نسر البرية`}</title>
-        <meta name="description" content="شوف نقاطك واستبدلها بهدايا مجانية" />
+        <title>{`${customerData.user.name} — نسر البرية`}</title>
       </Helmet>
 
       <div className="min-h-screen bg-background relative overflow-hidden flex flex-col font-cairo text-right" dir="rtl">
         <Header />
 
-        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        {/* خلفية */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[400px] h-[300px] rounded-full blur-[120px]"
+            style={{ background: 'hsl(43 85% 55% / 0.05)' }} />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] rounded-full blur-[100px]"
+            style={{ background: 'hsl(43 85% 55% / 0.03)' }} />
+        </div>
 
-        <div className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-          {/* أزرار التنقل — responsive */}
+        <div className="flex-1 max-w-2xl w-full mx-auto px-4 sm:px-5 py-6 relative z-10">
+
+          {/* شريط التنقل العلوي */}
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
+            className="flex items-center justify-between mb-7"
           >
-            {/* موبايل: صفين */}
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              <button
-                onClick={() => navigate("/login")}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-muted-foreground hover:text-foreground hover:bg-white/10 transition-all text-sm font-medium"
-              >
-                <ArrowRight className="w-4 h-4 shrink-0" />
-                <span>رجوع</span>
-              </button>
-
-              <button
-                onClick={() => navigate("/products")}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-orange-500/10 border border-orange-400/20 text-orange-400 hover:bg-orange-400/20 transition-all text-sm font-medium"
-              >
-                <Package className="w-4 h-4 shrink-0" />
-                <span>منتجاتنا</span>
-              </button>
-
-              <button
-                onClick={() => navigate("/offers")}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-500/10 border border-purple-400/20 text-purple-400 hover:bg-purple-400/20 transition-all text-sm font-medium"
-              >
-                <Tag className="w-4 h-4 shrink-0" />
-                <span>عروضنا</span>
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-500/10 border border-red-400/20 text-red-400 hover:bg-red-400/20 transition-all text-sm font-medium mr-auto"
-              >
-                <LogOut className="w-4 h-4 shrink-0" />
-                <span>خروج</span>
-              </button>
+            {/* روابط يمين */}
+            <div className="flex items-center gap-2">
+              {navItems.map(({ label, icon: Icon, path, color, bg }) => (
+                <button key={path} onClick={() => navigate(path)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-semibold transition-all ${bg} ${color}`}>
+                  <Icon className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{label}</span>
+                </button>
+              ))}
             </div>
+
+            {/* زرار الخروج شمال */}
+            <button onClick={handleLogout}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-muted-foreground hover:text-red-400 hover:bg-red-500/10 hover:border-red-400/20 text-xs font-semibold transition-all">
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">خروج</span>
+            </button>
           </motion.div>
 
-          {/* رسالة الترحيب */}
+          {/* الترحيب */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-center mb-6"
+            className="text-center mb-8"
           >
-            <h1 className="text-4xl md:text-5xl font-extrabold text-foreground mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-4 text-xs font-semibold"
+              style={{
+                background: 'hsl(43 85% 55% / 0.1)',
+                border: '1px solid hsl(43 85% 55% / 0.2)',
+                color: 'hsl(43 85% 65%)'
+              }}>
+              🦅 نسر البرية
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-black text-foreground mb-2">
               أهلاً يا {customerData.user.name} 👋
             </h1>
-            <p className="text-xl text-muted-foreground mb-6">
-              نورت المحل، رقمك: {customerData.user.phone}
+            <p className="text-sm text-muted-foreground">
+              رقمك: <span className="text-foreground font-mono">{customerData.user.phone}</span>
             </p>
 
-            {/* زرار التقييم الجديد */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            {/* زرار التقييم */}
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => window.open("https://g.page/r/CSSPGLjbftidEBI/review", "_blank")}
+              className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-bold text-sm transition-all"
+              style={{
+                background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+                color: '#1a1200',
+                boxShadow: '0 4px 16px rgba(245,158,11,0.25)'
+              }}
             >
-              <Button
-                onClick={() => window.open("https://g.page/r/CSSPGLjbftidEBI/review", "_blank")}
-                className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-6 px-8 rounded-full shadow-lg shadow-yellow-500/20 flex items-center gap-2 mx-auto transition-all"
-              >
-                <Star className="w-5 h-5 fill-black" />
-                قيم تجربتك معانا على جوجل
-              </Button>
-            </motion.div>
+              <Star className="w-4 h-4 fill-current" />
+              قيّم تجربتك على جوجل
+            </motion.button>
           </motion.div>
 
-          {/* تنبيه توضيحي لنظام النقاط الجديد */}
+          {/* تنبيه نظام النقاط */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.15 }}
-            className="bg-primary/10 border border-primary/20 rounded-2xl p-4 mb-10 flex items-center gap-4 text-primary"
+            className="flex items-start gap-3 p-4 rounded-2xl mb-8"
+            style={{
+              background: 'hsl(43 85% 55% / 0.07)',
+              border: '1px solid hsl(43 85% 55% / 0.18)'
+            }}
           >
-            <div className="bg-primary/20 p-2 rounded-full">
-              <Info className="w-6 h-6" />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
+              style={{ background: 'hsl(43 85% 55% / 0.15)' }}>
+              <Info className="w-4 h-4 text-primary" />
             </div>
-            <p className="text-sm md:text-base font-medium leading-relaxed">
-              نظامنا الجديد: كل 100 جنيه مشتريات بتديك 10 نقط.. وعند الاستبدال{" "}
-              <strong>كل نقطة بتساوي 1 جنيه</strong> خصم فوري!
+            <p className="text-sm text-foreground/80 leading-relaxed">
+              كل <strong className="text-primary">100 جنيه</strong> مشتريات = <strong className="text-primary">10 نقاط</strong> ·
+              عند الاستبدال <strong className="text-primary">كل نقطة = 1 جنيه</strong> خصم فوري! 🎉
             </p>
           </motion.div>
 
-          {/* باقي الكود كما هو... */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 items-center">
+          {/* النقاط والرانك */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6 items-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
+              className="flex justify-center"
             >
               <PointsBadge points={customerData.user.points || 0} />
             </motion.div>
 
-            <div className="space-y-6">
-              <CommunityRank
-                rank={customerData.rank}
-                totalCustomers={customerData.totalCustomers}
-              />
-
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <ExpirationWarning
-                  expirationDate={customerData.user.expirationDate}
-                />
+            <div className="space-y-4">
+              <CommunityRank rank={customerData.rank} totalCustomers={customerData.totalCustomers} />
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+                <ExpirationWarning expirationDate={customerData.user.expirationDate} />
               </motion.div>
             </div>
           </div>
 
+          {/* كارت الاستبدال */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mb-12"
+            transition={{ delay: 0.35 }}
+            className="mb-6"
           >
-            <RewardCard
-              userPoints={customerData.user.points || 0}
-              delay={0.4}
-              onRedeem={handleRedeemPoints}
-            />
+            <RewardCard userPoints={customerData.user.points || 0} delay={0.35} onRedeem={handleRedeemPoints} />
           </motion.div>
 
+          {/* سجل العمليات */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="glass-card p-6"
+            transition={{ delay: 0.45 }}
+            className="glass-card overflow-hidden"
           >
-            <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
-              <Receipt className="w-6 h-6 text-primary" />
-              عملياتك اللي فاتت
-            </h2>
+            <div className="flex items-center gap-3 p-5 border-b border-white/[0.06]">
+              <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+                style={{ background: 'hsl(43 85% 55% / 0.12)', border: '1px solid hsl(43 85% 55% / 0.2)' }}>
+                <Receipt className="w-4 h-4 text-primary" />
+              </div>
+              <h2 className="text-base font-bold text-foreground">عملياتك اللي فاتت</h2>
+            </div>
 
-            {customerData.history && customerData.history.length > 0 ? (
-              <div className="space-y-1">
+            {customerData.history?.length > 0 ? (
+              <div className="divide-y divide-white/[0.04]">
                 {customerData.history.map((transaction, index) => (
                   <TransactionItem key={index} transaction={transaction} />
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12 bg-white/5 rounded-xl border border-white/5">
-                <Receipt className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-                <p className="text-lg text-foreground font-medium">
-                  لسه مفيش عمليات تمت
-                </p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  ابدأ التسوق واكسب نقاط
-                </p>
+              <div className="text-center py-14">
+                <Receipt className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-30" />
+                <p className="text-base font-medium text-foreground/60">لسه مفيش عمليات</p>
+                <p className="text-sm text-muted-foreground mt-1">ابدأ التسوق واكسب نقاط 🛍️</p>
               </div>
             )}
           </motion.div>
-        </div>
-      </div>
 
-      {/* بانر تفعيل الإشعارات */}
-      <NotificationPrompt phone={customerData.user.phone} />
+          {/* فوتر */}
+          <div className="text-center mt-8 pb-2">
+            <p className="text-xs text-muted-foreground/30">
+              جميع الحقوق محفوظة © {new Date().getFullYear()} نسر البرية
+            </p>
+          </div>
+        </div>
+
+        <NotificationPrompt phone={customerData.user.phone} />
+      </div>
     </>
   );
 }
