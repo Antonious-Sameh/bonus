@@ -5,13 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Users, TrendingUp, DollarSign, Plus, UserPlus, LogOut,
   Search, Trophy, BarChart3, Pencil, Trash2, Key, Package,
-  Tag, ChevronLeft, X, Check, AlertCircle,
+  Tag, ChevronLeft, X, Check, AlertCircle, Minus, NotebookPen,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext.jsx";
 import Header from "@/components/Header.jsx";
+import RedeemSheet from "@/components/RedeemSheet.jsx";
 import axios from "axios";
 
 // ── مكوّن كارت الإحصائية ──────────────────────────────────────────
@@ -153,6 +154,7 @@ export default function AdminDashboard() {
   const [addPointsOpen, setAddPointsOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [redeemOpen, setRedeemOpen] = useState(false);
 
   // Forms
   const [pointsPhone, setPointsPhone] = useState("");
@@ -309,23 +311,43 @@ export default function AdminDashboard() {
             >
               <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-all duration-300" />
               <Plus className="w-5 h-5 relative z-10" />
-              <span className="relative z-10">ضيف نقاط للزبون</span>
+              <span className="relative z-10">ضيف نقاط</span>
+            </motion.button>
+
+            {/* استبدال نقاط */}
+            <motion.button whileTap={{ scale: 0.98 }}
+              onClick={() => setRedeemOpen(true)}
+              className="group h-14 flex items-center justify-center gap-3 rounded-2xl font-bold text-base transition-all duration-200"
+              style={{ background: "hsl(0 70% 50% / 0.1)", border: "1px solid hsl(0 70% 50% / 0.22)", color: "#fca5a5" }}
+              onMouseEnter={e => e.currentTarget.style.background = "hsl(0 70% 50% / 0.16)"}
+              onMouseLeave={e => e.currentTarget.style.background = "hsl(0 70% 50% / 0.1)"}
+            >
+              <Minus className="w-5 h-5" />
+              استبدال نقاط
             </motion.button>
 
             {/* سجل زبون */}
             <motion.button whileTap={{ scale: 0.98 }}
               onClick={() => setRegisterOpen(true)}
               className="group h-14 flex items-center justify-center gap-3 rounded-2xl font-bold text-base transition-all duration-200"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "hsl(40 20% 82%)"
-              }}
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "hsl(40 20% 82%)" }}
               onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.07)"}
               onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.04)"}
             >
               <UserPlus className="w-5 h-5" />
               سجل زبون جديد
+            </motion.button>
+
+            {/* نوتة الطلبات */}
+            <motion.button whileTap={{ scale: 0.98 }}
+              onClick={() => navigate("/admin/orders")}
+              className="group h-14 flex items-center justify-center gap-3 rounded-2xl font-bold text-base transition-all duration-200"
+              style={{ background: "hsl(220 80% 55% / 0.08)", border: "1px solid hsl(220 80% 55% / 0.2)", color: "#93c5fd" }}
+              onMouseEnter={e => e.currentTarget.style.background = "hsl(220 80% 55% / 0.14)"}
+              onMouseLeave={e => e.currentTarget.style.background = "hsl(220 80% 55% / 0.08)"}
+            >
+              <NotebookPen className="w-5 h-5" />
+              نوتة الطلبات
             </motion.button>
           </motion.div>
 
@@ -566,6 +588,9 @@ export default function AdminDashboard() {
             </div>
           )}
         </Sheet>
+
+        {/* ══ RedeemSheet ══ */}
+        <RedeemSheet open={redeemOpen} onClose={() => setRedeemOpen(false)} onSuccess={fetchData} />
       </div>
     </>
   );

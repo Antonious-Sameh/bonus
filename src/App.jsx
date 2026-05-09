@@ -14,6 +14,7 @@ import AdminProducts from './pages/AdminProducts';
 import ProductsPage from './pages/ProductsPage';
 import AdminOffers from './pages/AdminOffers';
 import OffersPage from './pages/OffersPage';
+import AdminOrders from './pages/AdminOrders';
 import WhatsAppWidget from "./components/WhatsAppWidget";
 
 function App() {
@@ -94,6 +95,16 @@ function App() {
                 element={
                   <ProtectedRoute allowedRoles={['customer', 'admin']}>
                     <OffersPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* صفحة نوتة الطلبات - للأدمن */}
+              <Route
+                path="/admin/orders"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminOrders />
                   </ProtectedRoute>
                 }
               />
