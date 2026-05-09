@@ -235,12 +235,7 @@ export default function CustomerProfile() {
             )}
           </motion.div>
 
-          {/* فوتر */}
-          <div className="text-center mt-8 pb-2">
-            <p className="text-xs text-muted-foreground/30">
-              جميع الحقوق محفوظة © {new Date().getFullYear()} نسر البرية
-            </p>
-          </div>
+          
         </div>
 
         <NotificationPrompt phone={customerData.user.phone} />
