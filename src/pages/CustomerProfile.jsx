@@ -15,6 +15,7 @@ import ExpirationWarning from "@/components/ExpirationWarning.jsx";
 import Header from "@/components/Header.jsx";
 import NotificationPrompt from "@/components/NotificationPrompt.jsx";
 import OrderRequestSheet from "@/components/OrderRequestSheet.jsx";
+import CustomerReviews from "@/components/CustomerReviews.jsx";
 import axios from "axios";
 
 // ── مكوّن كارت المعلومة الصغيرة ──────────────────────────────────
@@ -292,7 +293,18 @@ export default function CustomerProfile() {
               </div>
             )}
           </motion.div>
+
+          {/* ── آراء العملاء ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55 }}
+          >
+            <CustomerReviews />
+          </motion.div>
+
           
+
         </div>
 
         <NotificationPrompt phone={cu.phone} />
